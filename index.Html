@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Caça Níquel de Áudio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="slot-container">
+        <img src="slot-machine.png" alt="Slot Machine" class="slot-image">
+      
+        <div class="slot-display slot1" id="volumeSlot">0%</div>
+        <div class="slot-display slot2" id="audioSlot">Som 1</div>
+        
+      
+        <button id="playButton" class="play-btn">Girar</button>
+      
+        <audio id="audioPlayer"></audio>
+      </div>
+      
+      <script src="script.js"></script>
+
+      <div class="volume-bar-container">
+        <label for="volumeBar">Volume atual:</label>
+        <progress id="volumeBar" value="0.5" max="1"></progress>
+      </div>
+
+      <div class="slot-display slot3">
+        <img id="imageSlot" src="imgs/som1.png" alt="Imagem do som" class="slot-image-preview">
+      </div>
+</body>
+</html>
