@@ -1,24 +1,17 @@
-const volumes = [0, 0.25, 0.5, 0.75, 1];//lista com volume.
-//lista com porcentagem de volume que vai aparecer no slot.
-const volumeLabels = ['0%', '25%', '50%', '75%', '100%'];
+const volumes = [0, 0.25, 0.5, 0.75, 1]; // lista com volume
+const volumeLabels = ['0%', '25%', '50%', '75%', '100%']; // lista com porcentagem de volume
+const audios = ['som1.mp3', 'som2.mp3', 'som3.mp3', 'som4.mp3', 'som5.mp3']; // lista dos sons disponíveis
 
-//lista dos sons disponiveis.
-const audios = [
-  'som1.mp3',
-  'som2.mp3',
-  'som3.mp3',
-  'som4.mp3',
-  'som5.mp3'
-];
-
-//Coloca som de roleta ao apertar o buttom
-const roletaSound = new Audio('roleta.mp3'); 
+// Coloca som de roleta ao apertar o botão
+const roletaSound = new Audio('roleta.mp3');
 const volumeSlot = document.getElementById('volumeSlot');
 const audioSlot = document.getElementById('audioSlot');
 const playButton = document.getElementById('playButton');
 const audioPlayer = document.getElementById('audioPlayer');
+const imageSlot = document.getElementById('imageSlot'); // A imagem da roleta
+const messageDiv = document.getElementById('message'); // Div para exibir a mensagem
 
-//faz a rotação dos slots de volume e Som
+// Faz a rotação dos slots de volume e som
 function rolarSlotAsync(elemento, lista) {
   return new Promise((resolve) => {
     let count = 0;
@@ -32,13 +25,13 @@ function rolarSlotAsync(elemento, lista) {
 
       if (count >= maxCount) {
         clearInterval(intervalo);
-        resolve(finalIndex);
+        resolve(finalIndex); // Resolve com o índice sorteado
       }
     }, 100);
   });
 }
 
-//Faz o efeito de rolagem da imagem
+// Faz o efeito de rolagem da imagem
 function rolarImagemSlotAsync(elemento, totalImagens) {
   return new Promise((resolve) => {
     let count = 0;
@@ -52,42 +45,53 @@ function rolarImagemSlotAsync(elemento, totalImagens) {
 
       if (count >= maxCount) {
         clearInterval(intervalo);
-        resolve(finalIndex);
+        resolve(finalIndex); // Resolve com o índice sorteado após a rotação
       }
     }, 100);
   });
 }
 
 playButton.addEventListener('click', async () => {
-  playButton.disabled = true;//não pode clicar até a roleta terminar.
-  //Inicia o som de roleta
+  playButton.disabled = true; // Não pode clicar até a roleta terminar
+
+  // Inicia o som de roleta
   roletaSound.loop = true;
   roletaSound.play();
-  //As colunas começam a rodar utilizando as funções feitas anteriormente
+
+  // Sorteia o índice de áudio (também vai ser o índice da imagem)
+  const audioIndex = Math.floor(Math.random() * audios.length);
+
+  // As colunas começam a rodar utilizando as funções feitas anteriormente
   const volumePromise = rolarSlotAsync(volumeSlot, volumeLabels);
   const audioPromise = rolarSlotAsync(audioSlot, ['Som 1', 'Som 2', 'Som 3', 'Som 4', 'Som 5']);
-  const imagePromise = rolarImagemSlotAsync(imageSlot, audios.length);
+  
+  // Passa o índice sorteado para a rotação da imagem
+  const imagePromise = rolarImagemSlotAsync(imageSlot, audios.length); // Isso mantém o efeito de rotação da imagem
 
-  //Esperar todas as roletas terminarem de girar
-  const [volFinalIndex, audioFinalIndex, imgFinalIndex] = await Promise.all([
-    volumePromise,
-    audioPromise,
-    imagePromise
-  ]);
+  // Esperar todas as roletas terminarem de girar
+  const [volFinalIndex, audioFinalIndex, imgFinalIndex] = await Promise.all([volumePromise, audioPromise, imagePromise]);
 
-  //Para o som da roleta
+  // Para o som da roleta
   roletaSound.pause();
   roletaSound.currentTime = 0;
 
-  //Começa a rodar o audio sorteado
-  audioPlayer.src = audios[audioFinalIndex];
+  // Começa a rodar o áudio sorteado (com o índice correto)
+  audioPlayer.src = audios[audioIndex]; // Usa o índice sorteado para o áudio
   audioPlayer.volume = volumes[volFinalIndex];
 
-  //Atualiza a barra de volume de acorco com o sorteio
+  // Atualiza a barra de volume de acordo com o sorteio
   const volumeBar = document.getElementById('volumeBar');
   volumeBar.value = volumes[volFinalIndex];
 
-  audioPlayer.play();//toca o audio com volumes ajustado.
+  audioPlayer.play(); // Toca o áudio com volume ajustado
 
-  playButton.disabled = false;// reativa o buttom
+  // Verifica se o índice do áudio e o da imagem são iguais
+  if (audioFinalIndex === imgFinalIndex) {
+    messageDiv.textContent = "Parabéns! Você acertou o áudio e a imagem!";
+    messageDiv.classList.add('show'); // Exibe a caixa de mensagem
+  } else {
+    messageDiv.classList.remove('show'); // Limpa a mensagem se não forem iguais
+  }
+
+  playButton.disabled = false; // Reativa o botão após a roleta terminar
 });
