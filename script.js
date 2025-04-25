@@ -1,6 +1,6 @@
 const volumes = [0, 0.25, 0.5, 0.75, 1]; // lista com volume
 const volumeLabels = ['0%', '25%', '50%', '75%', '100%']; // lista com porcentagem de volume
-const audios = ['som1.mp3', 'som2.mp3', 'som3.mp3', 'som4.mp3', 'som5.mp3']; // lista dos sons disponíveis
+const audios = ['audios/som1.mp3', 'audios/som2.mp3', 'audios/som3.mp3', 'audios/som4.mp3', 'audios/som5.mp3']; // lista dos sons disponíveis
 
 // Coloca som de roleta ao apertar o botão
 const roletaSound = new Audio('roleta.mp3');
@@ -77,7 +77,7 @@ playButton.addEventListener('click', async () => {
 
   // Começa a rodar o áudio sorteado (com o índice correto)
   audioPlayer.src = audios[audioIndex]; // Usa o índice sorteado para o áudio
-  audioPlayer.volume = volumes[volFinalIndex];
+  audioPlayer.volume = volumes[volFinalIndex]; // Usa o indice sorteado para o volume
 
   // Atualiza a barra de volume de acordo com o sorteio
   const volumeBar = document.getElementById('volumeBar');
