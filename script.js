@@ -58,16 +58,11 @@ playButton.addEventListener('click', async () => {
   roletaSound.loop = true;
   roletaSound.play();
 
-  // Sorteia o índice de áudio (também vai ser o índice da imagem)
-  const audioIndex = Math.floor(Math.random() * audios.length);
-
   // As colunas começam a rodar utilizando as funções feitas anteriormente
-  const volumePromise = rolarSlotAsync(volumeSlot, volumeLabels);
-  const audioPromise = rolarSlotAsync(audioSlot, ['Som 1', 'Som 2', 'Som 3', 'Som 4', 'Som 5']);
+  const volumePromise = rolarSlotAsync(volumeSlot, volumeLabels); // Sorteia o volume
+  const audioPromise = rolarSlotAsync(audioSlot, ['Som 1', 'Som 2', 'Som 3', 'Som 4', 'Som 5']); // Sorteia o áudio
+  const imagePromise = rolarImagemSlotAsync(imageSlot, audios.length); // Sorteia a imagem
   
-  // Passa o índice sorteado para a rotação da imagem
-  const imagePromise = rolarImagemSlotAsync(imageSlot, audios.length); // Isso mantém o efeito de rotação da imagem
-
   // Esperar todas as roletas terminarem de girar
   const [volFinalIndex, audioFinalIndex, imgFinalIndex] = await Promise.all([volumePromise, audioPromise, imagePromise]);
 
@@ -76,8 +71,8 @@ playButton.addEventListener('click', async () => {
   roletaSound.currentTime = 0;
 
   // Começa a rodar o áudio sorteado (com o índice correto)
-  audioPlayer.src = audios[audioIndex]; // Usa o índice sorteado para o áudio
-  audioPlayer.volume = volumes[volFinalIndex]; // Usa o indice sorteado para o volume
+  audioPlayer.src = audios[audioFinalIndex]; // Usa o índice sorteado para o áudio
+  audioPlayer.volume = volumes[volFinalIndex]; // Usa o índice sorteado para o volume
 
   // Atualiza a barra de volume de acordo com o sorteio
   const volumeBar = document.getElementById('volumeBar');
